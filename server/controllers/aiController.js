@@ -23,7 +23,6 @@ export async function evaluateDrawing(correctWord, drawings) {
   for (const drawing of drawings) {
     try {
       const { playerId, imageData } = drawing;
-      console.log(imageData); 
      
   
       const response= await axios.post(
@@ -31,21 +30,23 @@ export async function evaluateDrawing(correctWord, drawings) {
          {imageData}
       );
       console.log(response.data);
-
+      const {predictions}= response.data
       console.log(`[eval] player ${playerId}-top 3 predictions:`); 
-      data.predictions.slice(0,3).forEach((p,i)=>
+      predictions.slice(0,3).forEach((p,i)=>
  console.log(`  ${i + 1}. ${p.label}: ${(p.prob * 100).toFixed(2)}%`)
       );
 
-      const topPrediction= data.predictions[0]; 
-      results.push({
-        playerId,
-        topPrediction: topPrediction.label, 
-        top10: data.predicions.map((s)=>({
-          label: s.label, 
-          confidence: Number(s.prob.toFixed(4)),
-        })),
-      });
+      const topPrediction= predictions[0]; 
+     results.push({
+  playerId,
+  topPrediction: topPrediction.label, 
+  topConfidence: Number(topPrediction.prob.toFixed(4)),
+  top10: predictions.map(s => ({
+    label: s.label, 
+    confidence: Number(s.prob.toFixed(4)),
+  })),
+});
+
 
 
       // // Decode base64 → Canvas

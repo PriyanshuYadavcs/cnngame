@@ -2,8 +2,12 @@ import React, { useRef, useState, useEffect } from "react";
 import Header from "../components/Header";
 import io from "socket.io-client";
 import { useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const CanvasPage = () => {
+
+  const navigate = useNavigate();
+
   const [submitted, setSubmitted] = useState(false);
   const [searchParams] = useSearchParams();
   const roomId = searchParams.get("roomId");
@@ -64,10 +68,21 @@ const CanvasPage = () => {
       remoteContext.closePath();
     };
 
-    const handleRoundResult = (data) => {
-      console.log("Round result:", data);
-      alert("Round over!");
-    };
+   const handleRoundResult = (round) => {
+    if (!round || !round.result) return;
+
+    let message = `Round Finished!\nWord: ${round.word}\n\n`;
+
+    round.result.forEach((r, idx) => {
+      message += `Player ${idx + 1} (${r.playerId}):\n`;
+      message += `Top Prediction: ${r.topPrediction}\n`;
+      message += `Top Confidence: ${(r.topConfidence * 100).toFixed(2)}%\n\n`;
+    });
+
+    message += `Winner: ${round.winner}`;
+
+    alert(message); // display the round result
+  };
 
     // Attach listeners
     newSocket.on("connect", handleConnect);

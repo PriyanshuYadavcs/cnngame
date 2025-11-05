@@ -56,8 +56,10 @@ export async function submitDrawing(roomId, socketId, imageData) {
   }
 }
 
-export async function finishRound(roomId, results) {
+
+export async function finishRound(roomId, results, winner) {
   try {
+    // Find the room with the active round
     const room = await Room.findOne({ roomId }).populate("currentRound");
     if (!room || !room.currentRound) {
       console.warn(`[CONTROLLER] No active round to finish in ${roomId}`);
@@ -70,12 +72,15 @@ export async function finishRound(roomId, results) {
       return null;
     }
 
-    // Store results + winner
-    round.results = results;
-    round.winner = results.winner;
+    // Save AI evaluation results (predictions) in the round
+    round.result = results; 
+
+    // Save winner
+    round.winner = winner;
+
     await round.save();
 
-    // clear currentRound from room
+    // Clear currentRound in the room
     room.currentRound = null;
     await room.save();
 

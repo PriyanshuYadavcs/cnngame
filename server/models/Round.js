@@ -5,10 +5,23 @@ const drawingSchema = new mongoose.Schema({
   imageData: String, // Base64 or file URL
 });
 
+const resultSchema = new mongoose.Schema({
+  playerId: String,
+  topPrediction: String,
+  topConfidence: Number,
+  top10: [
+    {
+      label: String,
+      confidence: Number,
+    }
+  ],
+});
+
 const roundSchema = new mongoose.Schema({
   roomId: { type: String, required: true },
   word: { type: String, required: true },
   drawings: [drawingSchema],
+  result:[resultSchema],
   winner: { type: String, default: null },
   createdAt: { type: Date, default: Date.now },
 });

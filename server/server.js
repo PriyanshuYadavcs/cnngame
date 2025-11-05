@@ -115,8 +115,8 @@ io.on("connection", (socket) => {
       if (round.drawings.length >= 2) {
         console.log(`[SERVER] Both players submitted in ${roomId}, evaluating...`);
 
-        const results = await evaluateDrawing(round.word, round.drawings);
-        const finishedRound = await finishRound(roomId, results);
+        const {results, winner} = await evaluateDrawing(round.word, round.drawings);
+        const finishedRound = await finishRound(roomId, results, winner);
 
         io.to(roomId).emit("round_result", finishedRound);
         console.log("[SERVER] Round result object:", finishedRound);
