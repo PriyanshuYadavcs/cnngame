@@ -27,7 +27,7 @@ export async function evaluateDrawing(correctWord, drawings) {
      
   
       const response= await axios.post(
-         "https://flaskserver-b4ys.onrender.com/predict",
+         "http://127.0.0.1:4000/predict",
          {imageData}
       );
       console.log(response.data);
